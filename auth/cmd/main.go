@@ -1,21 +1,32 @@
 package main
 
 import (
+	"log"
+	"net"
+	"net/http"
+
 	"github.com/asandriss/otp-doc-verification/auth/internal/config"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func main() {
 	var cfg config.Config
 
-	err := config.LoadConfig(&cfg)
+	if err := config.LoadConfig(&cfg); err != nil {
+		log.Fatal("failed to load config: %v", err)
+	}
 
 	router := gin.Default()
 	router.GET("/health", getHealth)
-	router.Run("localhost:8081")
+
+	ip := "0.0.0.0"
+	addr := net.JoinHostPort(ip, cfg.Port)
+	router.Run(addr)
 }
 
 func getHealth(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "{}")
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "ok",
+		"service": "auth",
+	})
 }
