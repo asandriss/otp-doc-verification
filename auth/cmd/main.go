@@ -5,15 +5,15 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/asandriss/otp-doc-verification/auth/internal/config"
+	"github.com/asandriss/otp-doc-verification/shared/config"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	var cfg config.Config
+	cfg := config.Config{}
 
 	if err := config.LoadConfig(&cfg); err != nil {
-		log.Fatal("failed to load config: %v", err)
+		log.Fatalf("failed to load config: %v", err)
 	}
 
 	router := gin.Default()
